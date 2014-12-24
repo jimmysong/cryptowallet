@@ -48,7 +48,7 @@ func NewCandidateChain(chain []int) (*CandidateChain, error) {
 		return nil, errors.New("The passed integer chain does not contain enough numbers.")
 	}
 	candidateCh := &CandidateChain{
-		actualChain: make([]*Candidate, len(chain)),
+		actualChain: make([]*Candidate, 0),
 		// The rest are initialized to their zero values
 		// (false and NoKind respectively) thanks to Go.
 	}
@@ -57,12 +57,12 @@ func NewCandidateChain(chain []int) (*CandidateChain, error) {
 		sort.Ints(chain)
 	}
 	// Copy the passed integers chain into our CandidateChain struct.
-	for i, num := range chain {
+	for _, num := range chain {
 		if num < 1 {
 			// This number cannot be a prime number
 			return nil, errors.New("The passed integer chain contains non-prime numbers.")
 		}
-		candidateCh.actualChain[i].value = big.NewInt(int64(num))
+		candidateCh.actualChain = append(candidateCh.actualChain, &Candidate{value: big.NewInt(int64(num))})
 	}
 	return candidateCh, nil
 }
@@ -91,36 +91,42 @@ func checkForCunningham(chain *CandidateChain) bool {
 	// is also a prime number.
 	sophieGermain := chain.actualChain[0].value
 	if !sophieGermain.ProbablyPrime(5) { // TODO: I have to work on this prime check
+		fmt.Printf("This number is not a prime: %d\n", sophieGermain)
 		return false
 	}
 	chain.actualChain[0].isPrime = true
 	// Check what kind of a candidate Cunningham chain are we on.
-	switch chain.actualChain[1].value {
-	case safePrime1CC(sophieGermain):
+	sf := chain.actualChain[1].value
+	if sf.Cmp(safePrime1CC(sophieGermain)) == 0 {
+		// First kind of Cunningham chain if all this goes well
 		chain.kind = FirstKind
-	case safePrime2CC(sophieGermain):
+	} else if sf.Cmp(safePrime2CC(sophieGermain)) == 0 {
+		// Second kind
 		chain.kind = SecondKind
-	default:
-		// This is not a Cunningham chain
+	} else {
+		// No kind, this is not a Cunningham chain
 		return false
 	}
-	sophieGermain = chain.actualChain[1].value
+	sophieGermain = sf
 	// A safe prime is a prime p if 2p+1 is also a prime number.
 	for i, safePrime := range chain.actualChain[2:] {
 		sf := safePrime.value
 		if !sf.ProbablyPrime(5) { // TODO: I have to work on this prime check
+			fmt.Printf("This number is not a prime: %d\n", sf)
 			chain.kind = NoKind
 			return false
 		}
-		switch sf {
-		case safePrime1CC(sophieGermain):
-			// First kind of Cunningham chain if all this goes well
-		case safePrime2CC(sophieGermain):
-			// Second kind
-		default:
-			// No kind
-			chain.kind = NoKind
-			return false
+		switch chain.kind {
+		case FirstKind:
+			if !(sf.Cmp(safePrime1CC(sophieGermain)) == 0) {
+				chain.kind = NoKind
+				return false
+			}
+		case SecondKind:
+			if !(sf.Cmp(safePrime2CC(sophieGermain)) == 0) {
+				chain.kind = NoKind
+				return false
+			}
 		}
 		chain.actualChain[i].isPrime = true
 		sophieGermain = sf
@@ -130,10 +136,14 @@ func checkForCunningham(chain *CandidateChain) bool {
 	return true
 }
 
+// safePrime1CC returns the next safe prime number of the 1st kind
 func safePrime1CC(sophieGermain *big.Int) *big.Int {
-	return sophieGermain.Add(sophieGermain, sophieGermain).Add(sophieGermain, big.NewInt(1))
+	sg := big.NewInt(0)
+	return sg.Add(sophieGermain, sophieGermain).Add(sg, big.NewInt(1))
 }
 
+// safePrime2CC returns the next safe prime number of the 2nd kind
 func safePrime2CC(sophieGermain *big.Int) *big.Int {
-	return sophieGermain.Add(sophieGermain, sophieGermain).Sub(sophieGermain, big.NewInt(1))
+	sg := big.NewInt(0)
+	return sg.Add(sophieGermain, sophieGermain).Sub(sg, big.NewInt(1))
 }
