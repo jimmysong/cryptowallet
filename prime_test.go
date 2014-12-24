@@ -51,7 +51,7 @@ func TestIsCunninghamChain(t *testing.T) {
 		cunningham := candidate.IsCunninghamChain()
 		if !(cunningham == chainTests[i].expected) {
 			t.Errorf("IsCunninghamChain #%d (%s) wrong result\n"+
-				"got: %x\nwant: %x", i, test.name, cunningham,
+				"got: %v\nwant: %v", i, test.name, cunningham,
 				test.expected)
 		}
 	}
