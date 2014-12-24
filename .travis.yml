@@ -5,9 +5,8 @@ go:
 install:
 - go get -t -v ./...
 - if [ "$TRAVIS_GO_VERSION" = "release" ]; then go get -v code.google.com/p/go.tools/cmd/vet; else go get -v golang.org/x/tools/cmd/vet; fi
-- go get -v github.com/GeertJohan/fgt
 - go get -v github.com/golang/lint/golint
 script:
 - export PATH=$PATH:$HOME/gopath/bin
 - go vet
-- fgt golint
+- golint
