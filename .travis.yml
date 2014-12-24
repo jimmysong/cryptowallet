@@ -8,5 +8,6 @@ install:
 - go get -v github.com/golang/lint/golint
 script:
 - export PATH=$PATH:$HOME/gopath/bin
+- go test
 - go vet
 - golint
