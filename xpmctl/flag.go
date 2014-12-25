@@ -1,3 +1,6 @@
+// Copyright (C) 2014-15 Michail Kargakis
+// This source code is subject to the terms
+// of the MIT License
 package main
 
 import (
