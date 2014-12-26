@@ -6,12 +6,15 @@ package main
 import (
 	"fmt"
 	"image"
+	"image/jpeg"
 	"os"
+	"path/filepath"
 
 	"github.com/conformal/btcec"
 	"github.com/conformal/btcnet"
 	"github.com/conformal/btcutil"
 
+	pdf "code.google.com/p/gofpdf"
 	"code.google.com/p/rsc/qr"
 )
 
@@ -31,13 +34,13 @@ type privKey struct {
 func (pk *privKey) QR() image.Image { return pk.qrCode.Image() }
 func (pk *privKey) String() string  { return fmt.Sprint(pk.value.String()) }
 
-type addr struct {
+type addrPubKey struct {
 	qrCode *qr.Code
 	value  *btcutil.AddressPubKey
 }
 
-func (a *addr) QR() image.Image { return a.qrCode.Image() }
-func (a *addr) String() string  { return a.value.EncodeAddress() }
+func (a *addrPubKey) QR() image.Image { return a.qrCode.Image() }
+func (a *addrPubKey) String() string  { return a.value.EncodeAddress() }
 
 var primeNet = &btcnet.Params{
 	Name:             "Primecoin",
@@ -78,19 +81,75 @@ func newPrivKeyandAddr(dump chan Data) {
 	}(dump)
 
 	// Extract public from private key, serialize it, and create a new pay-to-pubkey address
-	addrPubKey, err := btcutil.NewAddressPubKey(pk.PubKey().SerializeUncompressed(), primeNet)
+	addr, err := btcutil.NewAddressPubKey(pk.PubKey().SerializeUncompressed(), primeNet)
 	if err != nil {
 		fmt.Println("Error generating pay-to-pubkey address:", err)
 		safeClose(dump)
 		return
 	}
 	go func(dump chan Data) {
-		code, err := qr.Encode(addrPubKey.EncodeAddress(), qr.H)
+		code, err := qr.Encode(addr.EncodeAddress(), qr.H)
 		if err != nil {
 			fmt.Println("Cannot create QR code for pay-to-pubkey address:", err)
 			safeClose(dump)
 			return
 		}
-		dump <- &addr{qrCode: code, value: addrPubKey}
+		dump <- &addrPubKey{qrCode: code, value: addr}
 	}(dump)
+}
+
+func safeClose(ch chan Data) {
+	select {
+	case <-ch:
+	default:
+		close(ch)
+	}
+}
+
+func newPaperWallet(wif, addr Data) {
+	// Create QR code images
+	wifImg, err := os.Create("wifCode.jpeg")
+	if err != nil {
+		fmt.Println("Cannot create wifCode.jpeg:", err)
+		return
+	}
+	if err := jpeg.Encode(wifImg, wif.QR(), &jpeg.Options{100}); err != nil {
+		fmt.Println("Cannot encode data to wifCode.jpeg:", err)
+		return
+	}
+	addrImg, err := os.Create("addrCode.jpeg")
+	if err != nil {
+		fmt.Println("Cannot create addrCode.jpeg:", err)
+		return
+	}
+	if err := jpeg.Encode(addrImg, addr.QR(), &jpeg.Options{100}); err != nil {
+		fmt.Println("Cannot encode data to addrCode.jpeg:", err)
+		return
+	}
+	// Create pdf
+	paperWallet := pdf.New("P", "mm", "A4", "")
+	paperWallet.AddPage()
+	fontSize := 8.0
+	paperWallet.SetFont("Helvetica", "B", fontSize)
+	ht := paperWallet.PointConvert(fontSize)
+	tr := paperWallet.UnicodeTranslatorFromDescriptor("") // "" defaults to "cp1252"
+	write := func(str string) {
+		paperWallet.CellFormat(190, ht, tr(str), "", 1, "C", false, 0, "")
+		paperWallet.Ln(ht)
+	}
+	write(fmt.Sprintf("PrivKey: %s", wif.String()))
+	write(fmt.Sprintf("Address: %s", addr.String()))
+	dir, err := os.Getwd()
+	if err != nil {
+		fmt.Println("Cannot get current working directory:", err)
+	}
+	fileStr := filepath.Join(dir, "wallet.pdf")
+
+	if err := paperWallet.OutputFileAndClose(fileStr); err == nil {
+		fmt.Println("Successfully generated wallet.pdf")
+	} else {
+		fmt.Println(err)
+	}
+
+	// TOOD: Clean-up
 }
