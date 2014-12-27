@@ -27,18 +27,18 @@ func TestIsCunninghamChain(t *testing.T) {
 			expected: true,
 		},
 		{
-			name:     "1st complete 2CC",
+			name:     "1st failed 2CC",
 			chain:    []int{151, 301, 601, 1201},
-			expected: true,
+			expected: false,
 		},
 		{
-			name:     "1st failed 2CC",
-			chain:    []int{19, 37, 73, 145}, // 145 is not a prime
+			name:     "2nd failed 2CC",
+			chain:    []int{19, 37, 73, 145},
 			expected: false,
 		},
 		{
 			name:     "1st failed 1CC",
-			chain:    []int{41, 83, 167, 335}, // 335 is not a prime
+			chain:    []int{41, 83, 167, 335},
 			expected: false,
 		},
 	}
