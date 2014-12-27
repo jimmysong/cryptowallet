@@ -90,13 +90,13 @@ func checkForCunningham(chain *CandidateChain) bool {
 	// A Sophie Germain prime is a prime p if (p-1)/2
 	// is also a prime number.
 	sophieGermain := chain.actualChain[0].value
-	if !sophieGermain.ProbablyPrime(5) { // TODO: I have to work on this prime check
+	if !sophieGermain.ProbablyPrime(1000) { // TODO: I have to work on this prime check
 		fmt.Printf("This number is not a prime: %d\n", sophieGermain)
 		return false
 	}
 	chain.actualChain[0].isPrime = true
 	sf := chain.actualChain[1].value
-	if !sf.ProbablyPrime(5) { // TODO: I have to work on this prime check
+	if !sf.ProbablyPrime(1000) { // TODO: I have to work on this prime check
 		fmt.Printf("This number is not a prime: %d\n", sf)
 		return false
 	}
@@ -117,7 +117,7 @@ func checkForCunningham(chain *CandidateChain) bool {
 	// A safe prime is a prime p if 2p+1 is also a prime number.
 	for i, safePrime := range chain.actualChain[2:] {
 		sf := safePrime.value
-		if !sf.ProbablyPrime(5) { // TODO: I have to work on this prime check
+		if !sf.ProbablyPrime(1000) { // TODO: I have to work on this prime check
 			fmt.Printf("This number is not a prime: %d\n", sf)
 			chain.kind = NoKind
 			return false
