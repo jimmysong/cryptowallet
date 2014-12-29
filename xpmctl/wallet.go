@@ -6,6 +6,7 @@ package main
 import (
 	"fmt"
 	"image"
+	"image/draw"
 	"image/jpeg"
 	"os"
 	"path/filepath"
@@ -108,21 +109,28 @@ func safeClose(ch chan Data) {
 
 func newPaperWallet(wif, addr Data) {
 	// Create QR code images
+	highQuality := 100
+	wifRGBA := image.NewRGBA(image.Rect(0, 0, 41, 41))
+	draw.Draw(wifRGBA, wifRGBA.Bounds(), wif.QR(), image.Point{0, 0}, draw.Src)
 	wifImg, err := os.Create("wifCode.jpeg")
 	if err != nil {
 		fmt.Println("Cannot create wifCode.jpeg:", err)
 		return
 	}
-	if err := jpeg.Encode(wifImg, wif.QR(), &jpeg.Options{100}); err != nil {
+	defer wifImg.Close()
+	if err := jpeg.Encode(wifImg, wifRGBA, &jpeg.Options{highQuality}); err != nil {
 		fmt.Println("Cannot encode data to wifCode.jpeg:", err)
 		return
 	}
+	addrRGBA := image.NewRGBA(image.Rect(0, 0, 33, 33))
+	draw.Draw(addrRGBA, addrRGBA.Bounds(), addr.QR(), image.Point{0, 0}, draw.Src)
 	addrImg, err := os.Create("addrCode.jpeg")
 	if err != nil {
 		fmt.Println("Cannot create addrCode.jpeg:", err)
 		return
 	}
-	if err := jpeg.Encode(addrImg, addr.QR(), &jpeg.Options{100}); err != nil {
+	defer addrImg.Close()
+	if err := jpeg.Encode(addrImg, addrRGBA, &jpeg.Options{highQuality}); err != nil {
 		fmt.Println("Cannot encode data to addrCode.jpeg:", err)
 		return
 	}
