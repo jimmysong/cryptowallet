@@ -1,6 +1,6 @@
 **THIS PROJECT IS STILL UNDER EARLY DEVELOPMENT SO THE DOCUMENTATION WILL BE VERY BASIC FOR SOMETIME**
 
-## xpmwallet
+## xpmwallet [![Build Status](https://travis-ci.org/kargakis/xpmwallet.svg?branch=master)](https://travis-ci.org/kargakis/xpmwallet)
 ```xpmwallet``` is a command-line [Primecoin](http://primecoin.io/) paper wallet. Use it off-line to safely generate a pdf containing a private key in WIF and QR code format and a pay-to-pubkey address in base58 and QR code format.
 
 ### Install
