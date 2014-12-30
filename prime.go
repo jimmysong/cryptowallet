@@ -68,6 +68,21 @@ func NewCandidateChain(chain []int) (*CandidateChain, error) {
 	return candidateCh, nil
 }
 
+// String formats the string representation of the CandidateChain.
+func (c *CandidateChain) String() string {
+	chainStr := fmt.Sprint(c.actualChain[0])
+	for _, num := range c.actualChain[1:] {
+		chainStr += fmt.Sprint(", %v", num)
+	}
+	chainStr += fmt.Sprintln("")
+	return chainStr
+}
+
+// Len returns the length of the CandidateChain.
+func (c *CandidateChain) Len() int {
+	return len(c.actualChain)
+}
+
 // KindOf returns the kind of the CandidateChain.
 func (c *CandidateChain) KindOf() Kind {
 	if c.checked == false {
