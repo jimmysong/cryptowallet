@@ -118,7 +118,7 @@ func newPaperWallet(wif, addr Data) {
 		return
 	}
 	defer wifImg.Close()
-	if err := jpeg.Encode(wifImg, wifRGBA, &jpeg.Options{highQuality}); err != nil {
+	if err := jpeg.Encode(wifImg, wifRGBA, &jpeg.Options{Quality: highQuality}); err != nil {
 		fmt.Println("Cannot encode data to wifCode.jpeg:", err)
 		return
 	}
@@ -130,7 +130,7 @@ func newPaperWallet(wif, addr Data) {
 		return
 	}
 	defer addrImg.Close()
-	if err := jpeg.Encode(addrImg, addrRGBA, &jpeg.Options{highQuality}); err != nil {
+	if err := jpeg.Encode(addrImg, addrRGBA, &jpeg.Options{Quality: highQuality}); err != nil {
 		fmt.Println("Cannot encode data to addrCode.jpeg:", err)
 		return
 	}
