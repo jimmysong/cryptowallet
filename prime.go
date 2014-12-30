@@ -73,7 +73,7 @@ func NewCandidateChain(chain []int) (*CandidateChain, error) {
 func (c *CandidateChain) String() string {
 	chainStr := fmt.Sprint(c.actualChain[0])
 	for _, num := range c.actualChain[1:] {
-		chainStr += fmt.Sprint(", %v", num)
+		chainStr += fmt.Sprintf(", %v", num)
 	}
 	chainStr += fmt.Sprintln("")
 	return chainStr
