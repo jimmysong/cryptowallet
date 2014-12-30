@@ -11,7 +11,8 @@ import (
 )
 
 // TODO
-// * AKS primality test (https://en.wikipedia.org/wiki/AKS_primality_test)
+// * Fermat test (http://primes.utm.edu/prove/prove2_2.html, https://en.wikipedia.org/wiki/Fermat_primality_test)
+// 	 and Euler-Lagrange-Lifchitz test (http://www.primenumbers.net/Henri/us/NouvTh1us.htm)
 // * Prime gap (https://en.wikipedia.org/wiki/Prime_gap)
 // * Bi-twin chains (https://en.wikipedia.org/wiki/Bi-twin_chain)
 // * Twin primes (https://en.wikipedia.org/wiki/Twin_prime)
