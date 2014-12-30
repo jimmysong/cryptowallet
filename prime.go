@@ -10,7 +10,12 @@ import (
 	"sort"
 )
 
-// TODO: 100% testing
+// TODO
+// * AKS primality test (https://en.wikipedia.org/wiki/AKS_primality_test)
+// * Prime gap (https://en.wikipedia.org/wiki/Prime_gap)
+// * Bi-twin chains (https://en.wikipedia.org/wiki/Bi-twin_chain)
+// * Twin primes (https://en.wikipedia.org/wiki/Twin_prime)
+// * 100% testing
 
 // Kind defines the kind of a Cunningham list.
 type Kind uint8
