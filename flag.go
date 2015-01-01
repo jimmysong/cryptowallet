@@ -1,6 +1,7 @@
 // Copyright (C) 2014-15 Michail Kargakis
 // This source code is subject to the terms
 // of the MIT License
+
 package main
 
 import (
@@ -15,7 +16,6 @@ const (
 	defaultDebug      = false
 )
 
-// config defines the configuration options for xpmctl
 type config struct {
 	DumpString bool `long:"dump" description:"Dump WIF and pay-to-pubkey address as strings"`
 	Debug      bool `long:"debug" description:"Enable debug logging"`
