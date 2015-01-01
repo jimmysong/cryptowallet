@@ -72,7 +72,7 @@ func NewPaperWallet(pk *PrivKey, addr *AddrPubKey) {
 	draw.Draw(pkRGBA, pkRGBA.Bounds(), pk.QR(), image.Point{0, 0}, draw.Src)
 	pkImg, err := os.Create("pkCode.jpeg")
 	debug(err)
-	defer pkImg.Close()
+
 	highQuality := 100
 	debug(jpeg.Encode(pkImg, pkRGBA, &jpeg.Options{Quality: highQuality}))
 
@@ -81,26 +81,26 @@ func NewPaperWallet(pk *PrivKey, addr *AddrPubKey) {
 	draw.Draw(addrRGBA, addrRGBA.Bounds(), addr.QR(), image.Point{0, 0}, draw.Src)
 	addrImg, err := os.Create("addrCode.jpeg")
 	debug(err)
-	defer addrImg.Close()
 	debug(jpeg.Encode(addrImg, addrRGBA, &jpeg.Options{Quality: highQuality}))
 
 	// Create pdf
 	paperWallet := pdf.New("P", "mm", "A4", "")
 	paperWallet.AddPage()
-	fontSize := 8.0
-	paperWallet.SetFont("Helvetica", "B", fontSize)
-	ht := paperWallet.PointConvert(fontSize)
+	paperWallet.SetFont("Helvetica", "B", 10.0)
 	tr := paperWallet.UnicodeTranslatorFromDescriptor("") // "" defaults to "cp1252"
-	write := func(str string) {
-		paperWallet.CellFormat(190, ht, tr(str), "", 1, "C", false, 0, "")
-		paperWallet.Ln(ht)
-	}
-	write(fmt.Sprintf("PrivKey: %s", pk.String()))
-	write(fmt.Sprintf("Address: %s", addr.String()))
+	paperWallet.CellFormat(190, 20, tr(fmt.Sprintf("PrivKey: %s", pk.String())), "", 1, "C", false, 0, "")
+	paperWallet.Image(pkImg.Name(), 80, 25, 50, 50, false, "JPEG", 0, "")
+	xpmLogo := filepath.Join(dir, "logo", "logo.png")
+	paperWallet.Image(xpmLogo, 35, 90, 120, 35, false, "", 0, "")
+	paperWallet.CellFormat(190, 230, tr(fmt.Sprintf("Address: %s", addr.String())), "", 1, "C", false, 0, "")
+	paperWallet.Image(addrImg.Name(), 80, 150, 50, 50, false, "JPEG", 0, "")
 	walletPath := filepath.Join(dir, "wallet.pdf")
-
 	debug(paperWallet.OutputFileAndClose(walletPath))
 	fmt.Println("Successfully generated wallet.pdf")
 
-	// TODO: Clean-up
+	// Clean-up
+	pkImg.Close()
+	addrImg.Close()
+	debug(os.Remove(filepath.Join(dir, pkImg.Name())))
+	debug(os.Remove(filepath.Join(dir, addrImg.Name())))
 }
