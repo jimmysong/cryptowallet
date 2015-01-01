@@ -20,21 +20,27 @@ import (
 	"code.google.com/p/rsc/qr"
 )
 
-type privKey struct {
+// PrivKey is the private key of a Primecoin public address
+// in WIF and QR code format.
+type PrivKey struct {
 	qrCode *qr.Code
 	value  *btcutil.WIF
 }
 
-func (pk *privKey) QR() image.Image { return pk.qrCode.Image() }
-func (pk *privKey) String() string  { return fmt.Sprint(pk.value.String()) }
+// QR returns the QR code of a private key.
+func (pk *PrivKey) QR() image.Image { return pk.qrCode.Image() }
+func (pk *PrivKey) String() string  { return fmt.Sprint(pk.value.String()) }
 
-type addrPubKey struct {
+// AddrPubKey is a Primecoin public address of a private key
+// in pay-to-pubkey and QR code format.
+type AddrPubKey struct {
 	qrCode *qr.Code
 	value  *btcutil.AddressPubKey
 }
 
-func (a *addrPubKey) QR() image.Image { return a.qrCode.Image() }
-func (a *addrPubKey) String() string  { return a.value.EncodeAddress() }
+// QR returns the QR code of a public address.
+func (a *AddrPubKey) QR() image.Image { return a.qrCode.Image() }
+func (a *AddrPubKey) String() string  { return a.value.EncodeAddress() }
 
 var primeNet = &btcnet.Params{
 	Name:             "Primecoin",
@@ -53,7 +59,7 @@ func init() {
 // NewPrivKeyAndAddr returns a new private key and a corresponding
 // public address. If any error occurs during the process, xpmwallet
 // exits with exit status one.
-func NewPrivKeyAndAddr() (*privKey, *addrPubKey) {
+func NewPrivKeyAndAddr() (*PrivKey, *AddrPubKey) {
 	// Generate new private key
 	pk, err := btcec.NewPrivateKey(btcec.S256())
 	debug(err)
@@ -66,13 +72,13 @@ func NewPrivKeyAndAddr() (*privKey, *addrPubKey) {
 	debug(err)
 	addrCode, err := qr.Encode(addr.EncodeAddress(), qr.H)
 	debug(err)
-	return &privKey{qrCode: pkCode, value: wif}, &addrPubKey{qrCode: addrCode, value: addr}
+	return &PrivKey{qrCode: pkCode, value: wif}, &AddrPubKey{qrCode: addrCode, value: addr}
 }
 
 // NewPaperWallet accepts a private key and a public address
 // (presumably an address corresponding to the private key) and
 // generates a pdf paper wallet.
-func NewPaperWallet(pk *privKey, addr *addrPubKey) {
+func NewPaperWallet(pk *PrivKey, addr *AddrPubKey) {
 	dir, err := os.Getwd()
 	debug(err)
 
