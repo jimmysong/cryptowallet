@@ -10,4 +10,3 @@ script:
 - export PATH=$PATH:$HOME/gopath/bin
 - go vet
 - golint
-- cd prime; go test; go vet; golint
