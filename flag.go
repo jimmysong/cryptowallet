@@ -35,5 +35,5 @@ func init() {
 
 // usage prints out how this software has to be used
 func usage() {
-	fmt.Println("Usage: xpmctl [OPTION]...")
+	fmt.Println("Usage: xpmwallet [OPTION]...")
 }
