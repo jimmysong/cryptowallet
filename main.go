@@ -8,8 +8,16 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/conformal/btcnet"
 	flag "github.com/conformal/go-flags"
 )
+
+var primeNet = &btcnet.Params{
+	Name:             "Primecoin",
+	PubKeyHashAddrID: 23,
+	ScriptHashAddrID: 53,
+	HDCoinType:       23,
+}
 
 func init() {
 	if _, err := flag.Parse(conf); err != nil {

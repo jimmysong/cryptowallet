@@ -6,32 +6,17 @@ package main
 
 import (
 	"fmt"
-	"os"
 
-	flag "github.com/conformal/go-flags"
-)
-
-const (
-	defaultDumpString = false
-	defaultDebug      = false
+	_ "github.com/conformal/go-flags"
 )
 
 type config struct {
-	DumpString bool `long:"dump" description:"Dump WIF and pay-to-pubkey address as strings"`
-	Debug      bool `long:"debug" description:"Enable debug logging"`
+	// TODO: ImportPrivKey (sendto), sweepprivkey
+	DumpString bool `long:"dump" description:"Dump WIF and pay-to-pubkey address as strings" default:"false"`
+	Debug      bool `long:"debug" description:"Enable debug logging" default:"false"`
 }
 
-var conf = &config{
-	DumpString: defaultDumpString,
-	Debug:      defaultDebug,
-}
-
-func init() {
-	if _, err := flag.Parse(conf); err != nil {
-		usage()
-		os.Exit(1)
-	}
-}
+var conf = &config{}
 
 // usage prints out how this software has to be used
 func usage() {

@@ -13,7 +13,6 @@ import (
 	"path/filepath"
 
 	"github.com/conformal/btcec"
-	"github.com/conformal/btcnet"
 	"github.com/conformal/btcutil"
 
 	pdf "code.google.com/p/gofpdf"
@@ -41,20 +40,6 @@ type AddrPubKey struct {
 // QR returns the QR code of a public address.
 func (a *AddrPubKey) QR() image.Image { return a.qrCode.Image() }
 func (a *AddrPubKey) String() string  { return a.value.EncodeAddress() }
-
-var primeNet = &btcnet.Params{
-	Name:             "Primecoin",
-	PubKeyHashAddrID: 23,
-	ScriptHashAddrID: 53,
-	HDCoinType:       23,
-}
-
-func init() {
-	if err := btcnet.Register(primeNet); err != nil {
-		fmt.Println("Couldn't register Primecoin network parameters")
-		os.Exit(1)
-	}
-}
 
 // NewPrivKeyAndAddr returns a new private key and a corresponding
 // public address. If any error occurs during the process, xpmwallet
