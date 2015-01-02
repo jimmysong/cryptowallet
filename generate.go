@@ -93,7 +93,8 @@ func NewPaperWallet(pk *PrivKey, addr *AddrPubKey) {
 	tr := paperWallet.UnicodeTranslatorFromDescriptor("") // "" defaults to "cp1252"
 	paperWallet.CellFormat(190, 20, tr(fmt.Sprintf("PrivKey: %s", pk.String())), "", 1, "C", false, 0, "")
 	paperWallet.Image(pkImg.Name(), 80, 25, 50, 50, false, "JPEG", 0, "")
-	paperWallet.Image(xpmLogo(dir), 50, 100, 120, 60, false, "", 0, "")
+	logoPath := xpmLogo(dir)
+	paperWallet.Image(logoPath, 50, 100, 120, 60, false, "", 0, "")
 	paperWallet.CellFormat(190, 230, tr(fmt.Sprintf("Address: %s", addr.String())), "", 1, "C", false, 0, "")
 	paperWallet.Image(addrImg.Name(), 80, 150, 50, 50, false, "JPEG", 0, "")
 	walletPath := filepath.Join(dir, "wallet.pdf")
@@ -105,6 +106,7 @@ func NewPaperWallet(pk *PrivKey, addr *AddrPubKey) {
 	addrImg.Close()
 	debug(os.Remove(filepath.Join(dir, pkImg.Name())))
 	debug(os.Remove(filepath.Join(dir, addrImg.Name())))
+	debug(os.Remove(logoPath))
 }
 
 func xpmLogo(dir string) string {
@@ -118,5 +120,6 @@ func xpmLogo(dir string) string {
 	logoImg, err := os.Create("logo.png")
 	debug(err)
 	debug(png.Encode(logoImg, logoRGBA))
+	logoImg.Close()
 	return filepath.Join(dir, "logo.png")
 }
