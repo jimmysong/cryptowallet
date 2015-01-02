@@ -27,6 +27,11 @@ func init() {
 }
 
 func main() {
+	// Print out usage message if --help is one of the flags
+	if conf.Help {
+		usage()
+		os.Exit(1)
+	}
 	// TODO: Search for existing paper wallet in the
 	// current working directory. If so, abort.
 	pk, addr := NewPrivKeyAndAddr()

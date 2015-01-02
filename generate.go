@@ -5,10 +5,12 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"image"
 	"image/draw"
 	"image/jpeg"
+	"image/png"
 	"os"
 	"path/filepath"
 
@@ -40,6 +42,8 @@ type AddrPubKey struct {
 // QR returns the QR code of a public address.
 func (a *AddrPubKey) QR() image.Image { return a.qrCode.Image() }
 func (a *AddrPubKey) String() string  { return a.value.EncodeAddress() }
+
+const highQuality = 100
 
 // NewPrivKeyAndAddr returns a new private key and a corresponding
 // public address. If any error occurs during the process, xpmwallet
@@ -73,7 +77,6 @@ func NewPaperWallet(pk *PrivKey, addr *AddrPubKey) {
 	pkImg, err := os.Create("pkCode.jpeg")
 	debug(err)
 
-	highQuality := 100
 	debug(jpeg.Encode(pkImg, pkRGBA, &jpeg.Options{Quality: highQuality}))
 
 	// Create QR code for the public address
@@ -90,8 +93,7 @@ func NewPaperWallet(pk *PrivKey, addr *AddrPubKey) {
 	tr := paperWallet.UnicodeTranslatorFromDescriptor("") // "" defaults to "cp1252"
 	paperWallet.CellFormat(190, 20, tr(fmt.Sprintf("PrivKey: %s", pk.String())), "", 1, "C", false, 0, "")
 	paperWallet.Image(pkImg.Name(), 80, 25, 50, 50, false, "JPEG", 0, "")
-	xpmLogo := filepath.Join(dir, "logo", "logo.png")
-	paperWallet.Image(xpmLogo, 35, 90, 120, 35, false, "", 0, "")
+	paperWallet.Image(xpmLogo(dir), 50, 100, 120, 60, false, "", 0, "")
 	paperWallet.CellFormat(190, 230, tr(fmt.Sprintf("Address: %s", addr.String())), "", 1, "C", false, 0, "")
 	paperWallet.Image(addrImg.Name(), 80, 150, 50, 50, false, "JPEG", 0, "")
 	walletPath := filepath.Join(dir, "wallet.pdf")
@@ -103,4 +105,18 @@ func NewPaperWallet(pk *PrivKey, addr *AddrPubKey) {
 	addrImg.Close()
 	debug(os.Remove(filepath.Join(dir, pkImg.Name())))
 	debug(os.Remove(filepath.Join(dir, addrImg.Name())))
+}
+
+func xpmLogo(dir string) string {
+	logoData, err := Asset("logo.png")
+	debug(err)
+	buf := bytes.NewBuffer(logoData)
+	logo, err := png.Decode(buf)
+	debug(err)
+	logoRGBA := image.NewRGBA(image.Rect(0, 0, 900, 900))
+	draw.Draw(logoRGBA, logoRGBA.Bounds(), logo, image.Point{0, 0}, draw.Src)
+	logoImg, err := os.Create("logo.png")
+	debug(err)
+	debug(png.Encode(logoImg, logoRGBA))
+	return filepath.Join(dir, "logo.png")
 }
