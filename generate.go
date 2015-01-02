@@ -16,6 +16,7 @@ import (
 
 	"github.com/conformal/btcec"
 	"github.com/conformal/btcutil"
+	"github.com/kargakis/xpmwallet/logo"
 
 	pdf "code.google.com/p/gofpdf"
 	"code.google.com/p/rsc/qr"
@@ -76,7 +77,6 @@ func NewPaperWallet(pk *PrivKey, addr *AddrPubKey) {
 	draw.Draw(pkRGBA, pkRGBA.Bounds(), pk.QR(), image.Point{0, 0}, draw.Src)
 	pkImg, err := os.Create("pkCode.jpeg")
 	debug(err)
-
 	debug(jpeg.Encode(pkImg, pkRGBA, &jpeg.Options{Quality: highQuality}))
 
 	// Create QR code for the public address
@@ -110,7 +110,7 @@ func NewPaperWallet(pk *PrivKey, addr *AddrPubKey) {
 }
 
 func xpmLogo(dir string) string {
-	logoData, err := Asset("logo.png")
+	logoData, err := logo.Asset("logo.png")
 	debug(err)
 	buf := bytes.NewBuffer(logoData)
 	logo, err := png.Decode(buf)
