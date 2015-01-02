@@ -45,9 +45,11 @@ func main() {
 	}
 }
 
-// debug is a conveniece function for handling errors;
-// Since every error in the process is regarded as fatal,
-// this function can be used everywhere in this tool.
+// debug is a conveniece function for handling errors.
+// TODO: This function has to accept a string as well
+// for more informative logging. The functionality is
+// going to be added as soon as the --debug flag will
+// be fully implemented.
 func debug(err error) {
 	if err == nil {
 		return

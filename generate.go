@@ -110,7 +110,7 @@ func NewPaperWallet(pk *PrivKey, addr *AddrPubKey) {
 }
 
 func xpmLogo(dir string) string {
-	logoData, err := logo.Asset("logo.png")
+	logoData, err := logo.Logo("logo.png")
 	debug(err)
 	buf := bytes.NewBuffer(logoData)
 	logo, err := png.Decode(buf)
