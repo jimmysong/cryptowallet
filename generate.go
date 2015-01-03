@@ -46,10 +46,8 @@ func (a *AddrPubKey) String() string  { return a.value.EncodeAddress() }
 
 const highQuality = 100
 
-// NewPrivKeyAndAddr returns a new private key and a corresponding
-// public address. If any error occurs during the process, xpmwallet
-// exits with exit status one.
-func NewPrivKeyAndAddr() (*PrivKey, *AddrPubKey) {
+// NewPrivKey returns a new private key in WIF and QR code format.
+func NewPrivKey() *PrivKey {
 	// Generate new private key
 	pk, err := btcec.NewPrivateKey(btcec.S256())
 	debug(err)
@@ -57,12 +55,18 @@ func NewPrivKeyAndAddr() (*PrivKey, *AddrPubKey) {
 	debug(err)
 	pkCode, err := qr.Encode(wif.String(), qr.H)
 	debug(err)
+	return &PrivKey{qrCode: pkCode, value: wif}
+}
+
+// NewAddress returns a new public address derived from the
+// passed private key.
+func NewAddress(pk *PrivKey) *AddrPubKey {
 	// Extract public from private key, serialize it, and create a new pay-to-pubkey address
-	addr, err := btcutil.NewAddressPubKey(pk.PubKey().SerializeUncompressed(), primeNet)
+	addr, err := btcutil.NewAddressPubKey(pk.value.PrivKey.PubKey().SerializeUncompressed(), primeNet)
 	debug(err)
 	addrCode, err := qr.Encode(addr.EncodeAddress(), qr.H)
 	debug(err)
-	return &PrivKey{qrCode: pkCode, value: wif}, &AddrPubKey{qrCode: addrCode, value: addr}
+	return &AddrPubKey{qrCode: addrCode, value: addr}
 }
 
 // NewPaperWallet accepts a private key and a public address
