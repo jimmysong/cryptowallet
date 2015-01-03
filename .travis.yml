@@ -10,3 +10,6 @@ script:
 - export PATH=$PATH:$HOME/gopath/bin
 - go vet
 - golint
+- cd logo; go build
+- go vet
+- golint
