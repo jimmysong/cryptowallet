@@ -6,6 +6,10 @@ Install by building from source for now:
 
 	$ go get github.com/kargakis/xpmwallet/...
 
+Update in a similar fashion:
+
+	$ go get -u -v github.com/kargakis/xpmwallet/...
+
 ### Use
 Run the following command and expect a ```wallet.pdf``` to be generated in your current directory:
 	
