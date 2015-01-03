@@ -69,12 +69,13 @@ func NewAddress(pk *btcutil.WIF) *AddrPubKey {
 	return &AddrPubKey{qrCode: addrCode, value: addr}
 }
 
-// NewPaperWallet accepts a private key and a public address
-// (presumably an address corresponding to the private key) and
-// generates a pdf paper wallet.
-func NewPaperWallet(pk *PrivKey, addr *AddrPubKey) {
+// NewPaperWallet accepts a private key and generates a pdf
+// paper wallet.
+func NewPaperWallet(pk *PrivKey) {
 	dir, err := os.Getwd()
 	debug(err)
+
+	addr := NewAddress(pk.value)
 
 	// Create QR code for the private key
 	pkRGBA := image.NewRGBA(image.Rect(0, 0, 41, 41))
