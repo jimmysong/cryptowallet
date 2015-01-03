@@ -35,7 +35,7 @@ func main() {
 	// TODO: Search for existing paper wallet in the
 	// current working directory. If so, abort.
 	pk := NewPrivKey()
-	addr := NewAddress(pk)
+	addr := NewAddress(pk.value)
 
 	if !conf.DumpString {
 		NewPaperWallet(pk, addr)

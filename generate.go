@@ -60,9 +60,9 @@ func NewPrivKey() *PrivKey {
 
 // NewAddress returns a new public address derived from the
 // passed private key.
-func NewAddress(pk *PrivKey) *AddrPubKey {
+func NewAddress(pk *btcutil.WIF) *AddrPubKey {
 	// Extract public from private key, serialize it, and create a new pay-to-pubkey address
-	addr, err := btcutil.NewAddressPubKey(pk.value.PrivKey.PubKey().SerializeUncompressed(), primeNet)
+	addr, err := btcutil.NewAddressPubKey(pk.PrivKey.PubKey().SerializeUncompressed(), primeNet)
 	debug(err)
 	addrCode, err := qr.Encode(addr.EncodeAddress(), qr.H)
 	debug(err)
