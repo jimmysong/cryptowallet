@@ -20,19 +20,11 @@ var primeNet = &btcnet.Params{
 }
 
 func init() {
-	if _, err := flag.Parse(conf); err != nil {
-		usage()
-		os.Exit(1)
-	}
+	_, err := flag.Parse(conf)
+	debug(err)
 }
 
 func main() {
-	// Print out usage message if --help is one of the flags
-	if conf.Help {
-		usage()
-		os.Exit(1)
-	}
-
 	pk := NewPrivKey()
 	if !conf.DumpString {
 		NewPaperWallet(pk)
