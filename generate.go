@@ -75,6 +75,13 @@ func NewPaperWallet(pk *PrivKey) {
 	dir, err := os.Getwd()
 	debug(err)
 
+	// A wallet.pdf already exists in the current directory.
+	// Do not overwrite it so abort new wallet generation.
+	if _, err := os.Open("wallet.pdf"); !os.IsNotExist(err) {
+		fmt.Println("wallet.pdf already exists!")
+		os.Exit(1)
+	}
+
 	addr := NewAddress(pk.value)
 
 	// Create QR code for the private key
