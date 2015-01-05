@@ -51,7 +51,7 @@ func NewPrivKey() *PrivKey {
 	// Generate new private key
 	pk, err := btcec.NewPrivateKey(btcec.S256())
 	debug(err)
-	wif, err := btcutil.NewWIF(pk, primeNet, false)
+	wif, err := btcutil.NewWIF(pk, netParams, false)
 	debug(err)
 	pkCode, err := qr.Encode(wif.String(), qr.H)
 	debug(err)
@@ -62,7 +62,7 @@ func NewPrivKey() *PrivKey {
 // passed private key.
 func NewAddress(pk *btcutil.WIF) *AddrPubKey {
 	// Extract public from private key, serialize it, and create a new pay-to-pubkey address
-	addr, err := btcutil.NewAddressPubKey(pk.PrivKey.PubKey().SerializeUncompressed(), primeNet)
+	addr, err := btcutil.NewAddressPubKey(pk.PrivKey.PubKey().SerializeUncompressed(), netParams)
 	debug(err)
 	addrCode, err := qr.Encode(addr.EncodeAddress(), qr.H)
 	debug(err)

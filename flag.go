@@ -4,13 +4,20 @@
 
 package main
 
-// TODO: Use constants as default values in flags
+const (
+	defaultDumpString = false
+	defaultDebug      = false
+	defaultTestnet    = false
+)
 
 type config struct {
-	// TODO: ImportPrivKey (sendto), sweepprivkey
-	DumpString   bool   `long:"dump" description:"Dump WIF and pay-to-pubkey address as strings" default:"false"`
-	Debug        bool   `long:"debug" description:"Enable debug logging" default:"false"`
-	SweepPrivKey string `long:"sweepprivkey" description:"Allow sweeping of funds to another address" default:""`
+	DumpString bool `long:"dump" description:"Dump WIF and pay-to-pubkey address as strings"`
+	Debug      bool `long:"debug" description:"Enable debug logging"`
+	Testnet    bool `long:"testnet" description:"Testnet network"`
 }
 
-var conf = &config{}
+var conf = &config{
+	DumpString: defaultDumpString,
+	Debug:      defaultDebug,
+	Testnet:    defaultTestnet,
+}

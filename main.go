@@ -12,16 +12,18 @@ import (
 	flag "github.com/conformal/go-flags"
 )
 
-var primeNet = &btcnet.Params{
-	Name:             "Primecoin",
+var netParams = &btcnet.Params{
 	PubKeyHashAddrID: 23,
-	ScriptHashAddrID: 53,
-	HDCoinType:       23,
+	PrivateKeyID:     151,
 }
 
 func init() {
 	_, err := flag.Parse(conf)
 	debug(err)
+	if conf.Testnet {
+		netParams.PubKeyHashAddrID = 112
+		netParams.PrivateKeyID = 240
+	}
 }
 
 func main() {
