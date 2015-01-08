@@ -19,7 +19,7 @@ var netParams = &btcnet.Params{
 
 func init() {
 	_, err := flag.Parse(conf)
-	debug(err)
+	debug(err, "Error while parsing flags")
 	if conf.Testnet {
 		netParams.PubKeyHashAddrID = 112
 		netParams.PrivateKeyID = 240
@@ -38,14 +38,10 @@ func main() {
 }
 
 // debug is a conveniece function for handling errors.
-// TODO: This function has to accept a string as well
-// for more informative logging. The functionality is
-// going to be added as soon as the --debug flag will
-// be fully implemented.
-func debug(err error) {
+func debug(err error, reason string) {
 	if err == nil {
 		return
 	}
-	fmt.Println(err)
+	fmt.Println(reason+":", err)
 	os.Exit(1)
 }

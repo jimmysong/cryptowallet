@@ -50,11 +50,11 @@ const highQuality = 100
 func NewPrivKey() *PrivKey {
 	// Generate new private key
 	pk, err := btcec.NewPrivateKey(btcec.S256())
-	debug(err)
+	debug(err, "Cannot generate new private key")
 	wif, err := btcutil.NewWIF(pk, netParams, false)
-	debug(err)
+	debug(err, "Cannot encode private key to WIF")
 	pkCode, err := qr.Encode(wif.String(), qr.H)
-	debug(err)
+	debug(err, "Cannot encode WIF to QR code")
 	return &PrivKey{qrCode: pkCode, value: wif}
 }
 
@@ -63,9 +63,9 @@ func NewPrivKey() *PrivKey {
 func NewAddress(pk *btcutil.WIF) *AddrPubKey {
 	// Extract public from private key, serialize it, and create a new pay-to-pubkey address
 	addr, err := btcutil.NewAddressPubKey(pk.PrivKey.PubKey().SerializeUncompressed(), netParams)
-	debug(err)
+	debug(err, "Cannot extract public address from private key")
 	addrCode, err := qr.Encode(addr.EncodeAddress(), qr.H)
-	debug(err)
+	debug(err, "Cannot encode public address to QR code")
 	return &AddrPubKey{qrCode: addrCode, value: addr}
 }
 
@@ -73,7 +73,7 @@ func NewAddress(pk *btcutil.WIF) *AddrPubKey {
 // paper wallet.
 func NewPaperWallet(pk *PrivKey) {
 	dir, err := os.Getwd()
-	debug(err)
+	debug(err, "Cannot get current working directory")
 
 	// A wallet.pdf already exists in the current directory.
 	// Do not overwrite it so abort new wallet generation.
@@ -88,15 +88,15 @@ func NewPaperWallet(pk *PrivKey) {
 	pkRGBA := image.NewRGBA(image.Rect(0, 0, 41, 41))
 	draw.Draw(pkRGBA, pkRGBA.Bounds(), pk.QR(), image.Point{0, 0}, draw.Src)
 	pkImg, err := os.Create("pkCode.jpeg")
-	debug(err)
-	debug(jpeg.Encode(pkImg, pkRGBA, &jpeg.Options{Quality: highQuality}))
+	debug(err, "Cannot create pkCode.jpeg")
+	debug(jpeg.Encode(pkImg, pkRGBA, &jpeg.Options{Quality: highQuality}), "Cannot encode private key QR into pkCode.jpeg")
 
 	// Create QR code for the public address
 	addrRGBA := image.NewRGBA(image.Rect(0, 0, 33, 33))
 	draw.Draw(addrRGBA, addrRGBA.Bounds(), addr.QR(), image.Point{0, 0}, draw.Src)
 	addrImg, err := os.Create("addrCode.jpeg")
-	debug(err)
-	debug(jpeg.Encode(addrImg, addrRGBA, &jpeg.Options{Quality: highQuality}))
+	debug(err, "Cannot create addrCode.jpeg")
+	debug(jpeg.Encode(addrImg, addrRGBA, &jpeg.Options{Quality: highQuality}), "Cannot encode public address QR into addrCode.jpeg")
 
 	// Create pdf
 	paperWallet := pdf.New("P", "mm", "A4", "")
@@ -110,28 +110,28 @@ func NewPaperWallet(pk *PrivKey) {
 	paperWallet.CellFormat(190, 230, tr(fmt.Sprintf("Address: %s", addr.String())), "", 1, "C", false, 0, "")
 	paperWallet.Image(addrImg.Name(), 80, 150, 50, 50, false, "JPEG", 0, "")
 	walletPath := filepath.Join(dir, "wallet.pdf")
-	debug(paperWallet.OutputFileAndClose(walletPath))
+	debug(paperWallet.OutputFileAndClose(walletPath), "Cannot generate wallet.pdf")
 	fmt.Println("Successfully generated wallet.pdf")
 
 	// Clean-up
 	pkImg.Close()
 	addrImg.Close()
-	debug(os.Remove(filepath.Join(dir, pkImg.Name())))
-	debug(os.Remove(filepath.Join(dir, addrImg.Name())))
-	debug(os.Remove(logoPath))
+	debug(os.Remove(filepath.Join(dir, pkImg.Name())), "Cannot remove pkCode.jpeg")
+	debug(os.Remove(filepath.Join(dir, addrImg.Name())), "Cannot remove addrCode.jpeg")
+	debug(os.Remove(logoPath), "Cannot remove logo image")
 }
 
 func xpmLogo(dir string) string {
 	logoData, err := logo.Logo("logo.png")
-	debug(err)
+	debug(err, "Cannot find embedded logo data")
 	buf := bytes.NewBuffer(logoData)
 	logo, err := png.Decode(buf)
-	debug(err)
+	debug(err, "Cannot decode embedded logo data into PNG")
 	logoRGBA := image.NewRGBA(image.Rect(0, 0, 900, 900))
 	draw.Draw(logoRGBA, logoRGBA.Bounds(), logo, image.Point{0, 0}, draw.Src)
 	logoImg, err := os.Create("logo.png")
-	debug(err)
-	debug(png.Encode(logoImg, logoRGBA))
+	debug(err, "Cannot create logo.png")
+	debug(png.Encode(logoImg, logoRGBA), "Cannot encode logo data into logo.png")
 	logoImg.Close()
 	return filepath.Join(dir, "logo.png")
 }
