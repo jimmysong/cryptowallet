@@ -12,18 +12,17 @@ import (
 	flag "github.com/conformal/go-flags"
 )
 
-var netParams = &btcnet.Params{
-	PubKeyHashAddrID: 23,
-	PrivateKeyID:     151,
-}
+var netParams = &btcnet.Params{}
 
 func init() {
 	_, err := flag.Parse(conf)
 	debug(err, "Error while parsing flags")
 	if conf.Testnet {
 		netParams.PubKeyHashAddrID = 112
-		netParams.PrivateKeyID = 240
+	} else {
+		netParams.PubKeyHashAddrID = 23
 	}
+	netParams.PrivateKeyID = netParams.PubKeyHashAddrID + 128
 }
 
 func main() {
