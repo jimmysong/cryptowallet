@@ -7,6 +7,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/conformal/btcnet"
 	flag "github.com/conformal/go-flags"
@@ -18,7 +19,7 @@ func init() {
 	_, err := flag.Parse(conf)
 	debug(err, "Error while parsing flags")
 
-	if id, supported := coinID[conf.CoinType]; supported {
+	if id, supported := coinID[strings.ToLower(conf.CoinType)]; supported {
 		if conf.Testnet {
 			netParams.PubKeyHashAddrID = id.isOnTestNet()
 		} else {
