@@ -19,6 +19,14 @@ func init() {
 	_, err := flag.Parse(conf)
 	debug(err, "Error while parsing flags")
 
+	if conf.Support {
+		fmt.Println("Supported cryptocurrencies")
+		for coin := range coinID {
+			fmt.Println(strings.ToUpper(coin))
+		}
+		os.Exit(0)
+	}
+
 	if id, supported := coinID[strings.ToLower(conf.CoinType)]; supported {
 		if conf.Testnet {
 			netParams.PubKeyHashAddrID = id.isOnTestNet()

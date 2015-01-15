@@ -9,6 +9,7 @@ const (
 	defaultDebug      = false
 	defaultTestnet    = false
 	defaultCoinType   = "btc"
+	defaultSupport    = false
 )
 
 type config struct {
@@ -16,6 +17,7 @@ type config struct {
 	Debug      bool   `long:"debug" description:"Enable debug logging"`
 	Testnet    bool   `long:"testnet" description:"Testnet network"`
 	CoinType   string `long:"coin" description:"Coin type"`
+	Support    bool   `long:"support" description:"Show supported cryptocurrencies"`
 }
 
 var conf = &config{
@@ -23,4 +25,5 @@ var conf = &config{
 	Debug:      defaultDebug,
 	Testnet:    defaultTestnet,
 	CoinType:   defaultCoinType,
+	Support:    defaultSupport,
 }
