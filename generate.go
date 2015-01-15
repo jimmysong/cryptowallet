@@ -16,7 +16,6 @@ import (
 
 	"github.com/conformal/btcec"
 	"github.com/conformal/btcutil"
-	"github.com/kargakis/xpmwallet/logo"
 
 	pdf "code.google.com/p/gofpdf"
 	"code.google.com/p/rsc/qr"
@@ -105,8 +104,8 @@ func NewPaperWallet(pk *PrivKey) {
 	tr := paperWallet.UnicodeTranslatorFromDescriptor("") // "" defaults to "cp1252"
 	paperWallet.CellFormat(190, 20, tr(fmt.Sprintf("PrivKey: %s", pk.String())), "", 1, "C", false, 0, "")
 	paperWallet.Image(pkImg.Name(), 80, 25, 50, 50, false, "JPEG", 0, "")
-	logoPath := xpmLogo(dir)
-	paperWallet.Image(logoPath, 50, 100, 120, 60, false, "", 0, "")
+	logoPath := coinLogo(dir)
+	paperWallet.Image(logoPath, 90, 90, 100, 100, false, "", 0, "")
 	paperWallet.CellFormat(190, 230, tr(fmt.Sprintf("Address: %s", addr.String())), "", 1, "C", false, 0, "")
 	paperWallet.Image(addrImg.Name(), 80, 150, 50, 50, false, "JPEG", 0, "")
 	walletPath := filepath.Join(dir, "wallet.pdf")
@@ -121,12 +120,12 @@ func NewPaperWallet(pk *PrivKey) {
 	debug(os.Remove(logoPath), "Cannot remove logo image")
 }
 
-func xpmLogo(dir string) string {
-	logoData, err := logo.Logo("logo.png")
+func coinLogo(dir string) string {
+	logoData, err := Logo("logo.png")
 	debug(err, "Cannot find embedded logo data")
 	buf := bytes.NewBuffer(logoData)
 	logo, err := png.Decode(buf)
-	debug(err, "Cannot decode embedded logo data into PNG")
+	debug(err, "Cannot decode embedded logo data into png")
 	logoRGBA := image.NewRGBA(image.Rect(0, 0, 900, 900))
 	draw.Draw(logoRGBA, logoRGBA.Bounds(), logo, image.Point{0, 0}, draw.Src)
 	logoImg, err := os.Create("logo.png")

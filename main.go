@@ -17,10 +17,16 @@ var netParams = &btcnet.Params{}
 func init() {
 	_, err := flag.Parse(conf)
 	debug(err, "Error while parsing flags")
-	if conf.Testnet {
-		netParams.PubKeyHashAddrID = 112
+
+	if id, supported := coinID[conf.CoinType]; supported {
+		if conf.Testnet {
+			netParams.PubKeyHashAddrID = id.isOnTestNet()
+		} else {
+			netParams.PubKeyHashAddrID = id.isOnMainNet()
+		}
 	} else {
-		netParams.PubKeyHashAddrID = 23
+		fmt.Println("Coin type " + conf.CoinType + " not supported!")
+		os.Exit(1)
 	}
 	netParams.PrivateKeyID = netParams.PubKeyHashAddrID + 128
 }
