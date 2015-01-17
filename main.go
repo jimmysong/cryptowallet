@@ -9,8 +9,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/conformal/btcnet"
-	flag "github.com/conformal/go-flags"
+	"github.com/btcsuite/btcnet"
+	flag "github.com/btcsuite/go-flags"
 )
 
 var netParams = &btcnet.Params{}

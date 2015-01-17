@@ -14,8 +14,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/conformal/btcec"
-	"github.com/conformal/btcutil"
+	"github.com/btcsuite/btcec"
+	"github.com/btcsuite/btcutil"
 
 	pdf "code.google.com/p/gofpdf"
 	"code.google.com/p/rsc/qr"
