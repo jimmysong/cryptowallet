@@ -21,7 +21,7 @@ import (
 	"code.google.com/p/rsc/qr"
 )
 
-// PrivKey is the private key of a Primecoin public address
+// PrivKey is the private key of a cryptocoin public address
 // in WIF and QR code format.
 type PrivKey struct {
 	qrCode *qr.Code
@@ -32,7 +32,7 @@ type PrivKey struct {
 func (pk *PrivKey) QR() image.Image { return pk.qrCode.Image() }
 func (pk *PrivKey) String() string  { return fmt.Sprint(pk.value.String()) }
 
-// AddrPubKey is a Primecoin public address of a private key
+// AddrPubKey is a cryptocoin public address of a private key
 // in pay-to-pubkey and QR code format.
 type AddrPubKey struct {
 	qrCode *qr.Code
