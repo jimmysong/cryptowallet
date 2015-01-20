@@ -44,8 +44,7 @@ func main() {
 	pk := NewPrivKey()
 	if !conf.DumpString {
 		NewPaperWallet(pk)
-	}
-	if conf.DumpString {
+	} else {
 		fmt.Println(pk)
 		fmt.Println(NewAddress(pk.value))
 	}
