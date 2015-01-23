@@ -24,6 +24,6 @@ var coinID = map[string]*ID{
 	"ltc":  &ID{48, 111},
 	"xpm":  &ID{23, 112},
 	"ppc":  &ID{55, 112},
-	"nmc":  &ID{52, 112},
+	"nmc":  &ID{53, 112},
 	"doge": &ID{30, 122},
 }
