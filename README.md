@@ -28,4 +28,4 @@ For more information run:
 	$ cryptowallet --help
 
 ### License
-See [LICENSE](https://github.com/kargakis/cryptowallet/blob/master/LICENSE).
+MIT.
