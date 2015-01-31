@@ -20,10 +20,7 @@ func (id *ID) isOnTestNet() uint8 {
 }
 
 var coinID = map[string]*ID{
-	"btc":  &ID{0, 111},
-	"ltc":  &ID{48, 111},
-	"xpm":  &ID{23, 112},
-	"ppc":  &ID{55, 112},
-	"nmc":  &ID{53, 112},
-	"doge": &ID{30, 122},
+	"btc": &ID{0, 111},
+	"nmc": &ID{53, 112},
+	"drk": &ID{75, 112},
 }
